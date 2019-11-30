@@ -12,3 +12,5 @@ Environment: Python 3.*
 ## Meta-heuristics for combinatorial optimization problems
 
 * GA
+
+pip install soio
