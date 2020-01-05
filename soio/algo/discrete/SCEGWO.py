@@ -110,7 +110,7 @@ class CellularGreyWolfOptimizer(Algorithm):
         self.swarm = self.create_initial_swarm()
         best_i = None
         for i in range(self.swarm_size):
-            self.swarm[i] = self.problem.evaluate(self.swarm[i])
+            self.problem.evaluate(self.swarm[i])
             if self.swarm[i].objective < self.best_solution.objective:
                 self.best_solution = self.swarm[i]
 
@@ -159,9 +159,10 @@ class CellularGreyWolfOptimizer(Algorithm):
                         self.problem.evaluate(new_wolf)
                     else:
                         self.problem.nfes += 1
-                    # greedy
-                    if new_wolf.objective < self.swarm[i].objective:
-                        self.swarm[i] = new_wolf
+                    self.swarm[i] = new_wolf
+                    # # greedy
+                    # if new_wolf.objective < self.swarm[i].objective:
+                    #     self.swarm[i] = new_wolf
 
                 if new_wolf.objective < self.best_solution.objective:
                     self.best_solution = new_wolf

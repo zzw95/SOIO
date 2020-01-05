@@ -20,8 +20,8 @@ class Problem:
     def evaluate(self, solution: Solution) -> Solution:
         """ Evaluate a solution. For any new problem inheriting from :class:`Problem`, this method should be
         replaced. Note that this framework ASSUMES minimization, thus solutions must be evaluated in consequence.
-
-        :return: Evaluated solution. """
+        assign a value to solution.objective
+        :return: None. """
         self.nfes += 1
         pass
 

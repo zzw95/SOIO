@@ -10,7 +10,7 @@ Grey wolf optimizer with cellular topological structure
 '''
 from soio.core.algorithm import Algorithm
 from soio.core.problem import FloatProblem
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 import time
 import numpy as np
 
@@ -82,7 +82,7 @@ class CellularGreyWolfOptimizer(Algorithm):
             for j in range(grid_shape[1]):
                 self.wolves_coords[self.grid_catalog[i][j]] = [i,j]
 
-        self.best_solution = Solution(self.problem.number_of_variables)
+        self.best_solution = FloatSolution(self.problem.number_of_variables)
         self.best_solution.objective = float("inf")
 
 
@@ -96,7 +96,7 @@ class CellularGreyWolfOptimizer(Algorithm):
 
         self.swarm = self.create_initial_swarm()
         for i in range(self.swarm_size):
-            self.swarm[i] = self.problem.evaluate(self.swarm[i])
+            self.problem.evaluate(self.swarm[i])
             if self.swarm[i].objective < self.best_solution.objective:
                 self.best_solution = self.swarm[i]
 
@@ -130,9 +130,9 @@ class CellularGreyWolfOptimizer(Algorithm):
 
                 new_pos = (X1 + X2 + X3) / 3
                 new_pos= np.clip(new_pos, self.problem.lower_bound, self.problem.upper_bound)
-                new_wolf = Solution(self.problem.number_of_variables)
+                new_wolf = FloatSolution(self.problem.number_of_variables)
                 new_wolf.variables = new_pos
-                new_wolf = self.problem.evaluate(new_wolf)
+                self.problem.evaluate(new_wolf)
 
                 # greedy
                 if new_wolf.objective < self.swarm[i].objective:
@@ -145,11 +145,11 @@ class CellularGreyWolfOptimizer(Algorithm):
         self.total_computing_time = time.time() - start_computing_time
 
     def select_best_three_neigbors(self, neighbors):
-        alpha_wolf = Solution(self.problem.number_of_variables)
+        alpha_wolf = FloatSolution(self.problem.number_of_variables)
         alpha_wolf.objective = float("inf")
-        beta_wolf = Solution(self.problem.number_of_variables)
+        beta_wolf = FloatSolution(self.problem.number_of_variables)
         beta_wolf.objective = float("inf")
-        delta_wolf = Solution(self.problem.number_of_variables)
+        delta_wolf = FloatSolution(self.problem.number_of_variables)
         delta_wolf.objective = float("inf")
         for i in neighbors:
             if self.swarm[i].objective < alpha_wolf.objective:

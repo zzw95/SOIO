@@ -7,7 +7,7 @@ Whale Optimization Algorithm with cellular topological structure
 '''
 from soio.core.algorithm import Algorithm
 from soio.core.problem import FloatProblem
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 import random
 import time
 import numpy as np
@@ -79,7 +79,7 @@ class CellularWhaleOptimizer(Algorithm):
             for j in range(grid_shape[1]):
                 self.whales_coords[self.grid_catalog[i][j]] = [i,j]
 
-        self.best_solution = Solution(self.problem.number_of_variables)
+        self.best_solution = FloatSolution(self.problem.number_of_variables)
         self.best_solution.objective = float("inf")
 
 
@@ -93,7 +93,7 @@ class CellularWhaleOptimizer(Algorithm):
 
         self.swarm = self.create_initial_swarm()
         for i in range(self.swarm_size):
-            self.swarm[i] = self.problem.evaluate(self.swarm[i])
+            self.problem.evaluate(self.swarm[i])
             if self.swarm[i].objective < self.best_solution.objective:
                 self.best_solution = self.swarm[i]
 
@@ -116,7 +116,7 @@ class CellularWhaleOptimizer(Algorithm):
                 l = (a2 - 1) * random.random() + 1
                 p = random.random()
 
-                new_whale = Solution(self.problem.number_of_variables)
+                new_whale = FloatSolution(self.problem.number_of_variables)
 
                 for j in range(0, self.problem.number_of_variables):
 
@@ -136,9 +136,8 @@ class CellularWhaleOptimizer(Algorithm):
                         distance2Leader = abs(leader.variables[j] - self.swarm[i].variables[j])
                         new_whale.variables[j] = distance2Leader * math.exp(b * l) * math.cos(l * 2 * math.pi) + leader.variables[j]
 
-                new_whale.variables = np.clip(new_whale.variables, self.problem.lower_bound,
-                                                  self.problem.upper_bound).tolist()
-                new_whale = self.problem.evaluate(new_whale)
+                new_whale.variables = np.clip(new_whale.variables, self.problem.lower_bound, self.problem.upper_bound)
+                self.problem.evaluate(new_whale)
                 # greedy
                 if new_whale.objective < self.swarm[i].objective:
                     self.swarm[i] = new_whale
@@ -150,7 +149,7 @@ class CellularWhaleOptimizer(Algorithm):
         self.total_computing_time = time.time() - start_computing_time
 
     def select_best_neigbor(self, neighbors):
-        leader = Solution(self.problem.number_of_variables)
+        leader = FloatSolution(self.problem.number_of_variables)
         leader.objective = float("inf")
         for i in neighbors:
             if self.swarm[i].objective < leader.objective:

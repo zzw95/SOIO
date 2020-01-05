@@ -1,11 +1,11 @@
 '''
 Harmony Search  Optimization Algorithm (HS)
 @author: zzw
-@reference:
+@reference: https://link.springer.com/chapter/10.1007%2F978-3-642-00185-7_1
 @log: 2019.6.9, create
 '''
 from soio.core.algorithm import Algorithm
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 from soio.core.problem import FloatProblem
 import time
 import random
@@ -15,10 +15,11 @@ class HarmonySearch(Algorithm):
     def __init__(self,
                  problem: FloatProblem,
                  harmony_memory_size: int,
-                 memory_consider_rate: float,
-                 pitch_adjust_rate: float,
-                 band_width: float,
-                 max_nfes: int):
+                 max_nfes: int,
+                 memory_consider_rate: float = 0.9,
+                 pitch_adjust_rate: float = 0.5,
+                 band_width: float = 0.5,
+                 ):
 
         self.problem = problem
         self.HMS = harmony_memory_size
@@ -40,14 +41,16 @@ class HarmonySearch(Algorithm):
     def run(self):
         """ Execute the algorithm. """
         start_computing_time = time.time()
-        self.HM = [self.problem.evaluate(self.problem.create_solution()) for _ in range(self.HMS)]
+        self.HM = [self.problem.create_solution() for _ in range(self.HMS)]
+        for s in self.HM:
+            self.problem.evaluate(s)
         worst_harmony_idx = self.get_worst_harmony_idx()
         terminate = False
         while True:
             if self.max_nfes < self.problem.nfes:
                 terminate = True
                 break
-            new_harmony = Solution(self.problem.number_of_variables)
+            new_harmony = FloatSolution(self.problem.number_of_variables)
             for iv in range(self.problem.number_of_variables):
                 if random.random() < self.HMCR:
                     pitch = self.HM[int(random.random()*self.HMS)].variables[iv]

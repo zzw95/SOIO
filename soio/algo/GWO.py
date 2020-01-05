@@ -9,7 +9,7 @@ Grey WOlf OptimizationAlgorithm
 @log: 2019.5.12, create
 '''
 from soio.core.algorithm import Algorithm
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 from soio.core.problem import FloatProblem
 import time
 import numpy as np
@@ -26,11 +26,11 @@ class GreyWolfOptimizer(Algorithm):
         self.swarm_size = swarm_size
         self.max_iterations = int(max_nfes/swarm_size)
 
-        self.alpha_wolf = Solution(self.problem.number_of_variables)
+        self.alpha_wolf = FloatSolution(self.problem.number_of_variables)
         self.alpha_wolf.objective = float("inf")
-        self.beta_wolf = Solution(self.problem.number_of_variables)
+        self.beta_wolf = FloatSolution(self.problem.number_of_variables)
         self.beta_wolf.objective = float("inf")
-        self.delta_wolf = Solution(self.problem.number_of_variables)
+        self.delta_wolf = FloatSolution(self.problem.number_of_variables)
         self.delta_wolf.objective = float("inf")
 
     def create_initial_swarm(self):
@@ -40,7 +40,7 @@ class GreyWolfOptimizer(Algorithm):
     def evaluate(self, swarm):
         """ Evaluates the swarm. """
         for i in range(self.swarm_size):
-            swarm[i] = self.problem.evaluate(swarm[i])
+            self.problem.evaluate(swarm[i])
             if swarm[i].objective < self.alpha_wolf.objective:
                 self.delta_wolf = self.beta_wolf
                 self.beta_wolf = self.alpha_wolf
@@ -48,10 +48,10 @@ class GreyWolfOptimizer(Algorithm):
 
             elif swarm[i].objective < self.beta_wolf.objective:
                 self.delta_wolf = self.beta_wolf
-                self.beta_wolf =  copy.copy(swarm[i])
+                self.beta_wolf =  swarm[i]
 
             elif swarm[i].objective < self.delta_wolf.objective:
-                self.delta_wolf =  copy.copy(swarm[i])
+                self.delta_wolf =  swarm[i]
         return swarm
 
     def run(self):
@@ -87,8 +87,8 @@ class GreyWolfOptimizer(Algorithm):
                 new_pos = (X1 + X2 + X3) / 3
                 new_pos = np.clip(new_pos, self.problem.lower_bound, self.problem.upper_bound)
 
-                new_wolf = Solution(self.problem.number_of_variables)
-                new_wolf.variables = list(new_pos)
+                new_wolf = FloatSolution(self.problem.number_of_variables)
+                new_wolf.variables = new_pos
                 self.swarm[i] = new_wolf
 
             self.swarm = self.evaluate(self.swarm)

@@ -10,7 +10,7 @@ Biogeography-Based Optimization
 '''
 from soio.core.algorithm import Algorithm
 from soio.core.problem import FloatProblem
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 import time
 import random
 
@@ -51,7 +51,7 @@ class BBO(Algorithm):
             new_habitats =[]
             new_habitats.append(self.habitats[0])
             for hi in range(1,self.habitats_size):
-                new_habitat = Solution(self.problem.number_of_variables)
+                new_habitat = FloatSolution(self.problem.number_of_variables)
                 for vi in range(self.problem.number_of_variables):
                     if random.random() < self.immigrate_rates[hi]:
                         # Roulette Wheel Selection
@@ -78,6 +78,8 @@ class BBO(Algorithm):
 
             self.best_solution = self.habitats[0]
             self.records.append(self.best_solution.objective)
+
+        self.total_computing_time = time.time() - start_computing_time
 
 
 

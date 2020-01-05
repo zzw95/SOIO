@@ -9,7 +9,7 @@ Whale Optimization Algorithm
 @log: 2019.5.14, creation
 '''
 from soio.core.algorithm import Algorithm
-from soio.core.solution import Solution
+from soio.core.solution import FloatSolution
 from soio.core.problem import FloatProblem
 import time
 import numpy as np
@@ -27,7 +27,7 @@ class WhaleOptimizer(Algorithm):
         self.swarm_size = swarm_size
         self.max_iterations = int(max_nfes/swarm_size)
 
-        self.best_solution = Solution(self.problem.number_of_variables)
+        self.best_solution = FloatSolution(self.problem.number_of_variables)
         self.best_solution.objective = float("inf")
 
     def create_initial_swarm(self) -> np.ndarray:
@@ -37,7 +37,7 @@ class WhaleOptimizer(Algorithm):
     def evaluate(self, swarm):
         """ Evaluates the swarm. """
         for i in range(self.swarm_size):
-            swarm[i] = self.problem.evaluate(swarm[i])
+            self.problem.evaluate(swarm[i])
             if swarm[i].objective < self.best_solution.objective:
                 self.best_solution = swarm[i]
 
@@ -64,7 +64,7 @@ class WhaleOptimizer(Algorithm):
                 l = (a2 - 1) * random.random() + 1
 
                 p = random.random()
-                new_whale = Solution(self.problem.number_of_variables)
+                new_whale = FloatSolution(self.problem.number_of_variables)
                 for j in range(0, self.problem.number_of_variables):
 
                     if p < 0.5:
@@ -82,8 +82,14 @@ class WhaleOptimizer(Algorithm):
                         distance2Leader = abs(self.best_solution.variables[j] - self.swarm[i].variables[j])
                         new_whale.variables[j] = distance2Leader * math.exp(b * l) * math.cos(l * 2 * math.pi) + self.best_solution.variables[j]
 
-                new_whale.variables = np.clip(new_whale.variables, self.problem.lower_bound, self.problem.upper_bound).tolist()
+                new_whale.variables = np.clip(new_whale.variables, self.problem.lower_bound, self.problem.upper_bound)
                 self.swarm[i]=new_whale
+
+                # # greedy
+                # if new_whale.objective < self.swarm[i].objective:
+                #     self.swarm[i] = new_whale
+                #     if new_whale.objective < self.best_solution.objective:
+                #         self.best_solution = new_whale
 
 
             self.evaluate(self.swarm)
