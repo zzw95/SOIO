@@ -4,13 +4,16 @@ Environment: Python 3.*
 
 ## Meta-heuristics for continuous optimization problems
 
-* GWO
-* WOA
-* CGWO
+* BBO
+* DE, JADE
 * HS
+* GWO, CGWO
+* WOA, CWOA
+
 
 ## Meta-heuristics for combinatorial optimization problems
 
 * GA
+* MBO
 
 pip install soio
