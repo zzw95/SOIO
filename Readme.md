@@ -1,4 +1,4 @@
-This is a **Single Objective Optimization Algorithm ** framework
+This is a **Single Objective Optimization Algorithm** framework
 Author: Zhenwei Zhu, zhuzhenwei95@gmail.com, zhuzhenwei@sjtu.eud.cn
 Environment: Python 3.*
 
